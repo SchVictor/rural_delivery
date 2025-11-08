@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:rural_delivery/controller/authController.dart';
 
@@ -15,12 +17,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isSignUp = false; //variável que controla se o usuário...
   bool _obscure = true; //variável que controla se a senha está visível ou não
 
-  final _formKey =
-      GlobalKey<FormState>(); //chave global para o formulário de login
+  final _formKey = GlobalKey<FormState>(); //chave global para o formulário de login
   final _nameCtrl = TextEditingController(); //controlador do campo de nome
   final _emailCtrl = TextEditingController(); //controlador do campo de email
   final _passwordCtrl = TextEditingController(); //controlador do campo de senha
-  final AuthController _auth = AuthController(); //instancia a classe AuthController para usar os métodos de autenticação
+  final AuthController _auth = Get.find<AuthController>(); //instancia a classe AuthController para usar os métodos de autenticação
 
   @override
   void dispose() {
@@ -65,12 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
     print('Nome: ${_nameCtrl.text}');
     print('Email: ${_emailCtrl.text}');
 
-    // AQUI é onde, no futuro, chamaremos:
-    // await _auth.registerEmail(...) ou await _auth.loginEmail(...
+   
     if (isSignUp) {
-      //await _auth.registerEmail(_emailCtrl.text.trim(), _passCtrl.text.trim());
-    } else {//DESCOMENTAR DEPOIS DA IMPLEMENTAÇÃO DA CLASSE AUTHCONTROLLER
-      //await _auth.loginEmail(_emailCtrl.text.trim(), _passCtrl.text.trim());
+      await _auth.registerEmail(_emailCtrl.text.trim(), _passwordCtrl.text.trim());
+    } else {
+      await _auth.loginEmail(_emailCtrl.text.trim(), _passwordCtrl.text.trim());
     }
   }
 

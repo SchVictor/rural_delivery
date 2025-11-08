@@ -41,7 +41,7 @@ class AuthController extends GetxController {
     });
   }
 
-    Future<void> registerEmail(String email, String password) async {
+  Future<void> registerEmail(String email, String password) async {
     await _run(() async {
       final u = await _auth.registerWithEmail(email, password);
       await _afterFirebaseLogin(u, loginProviderIsGoogle: false, newUserDefaultRole: UserRole.user);

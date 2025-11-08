@@ -72,7 +72,7 @@ class UserModel {
 //------------------Firestore--------------------//
   factory UserModel.fromFirestore(String uid, Map<String, dynamic> map) {//construtor de fábrica para criar uma instância de UserModel a partir de um mapa, como um documento do Firestore, mapa de dados.
     return UserModel(
-      firebaseUid: map['firebaseUid'],
+      firebaseUid: uid, //change that made the redirection work
       name: map['name'],
       email: map['email'],
       avatarUrl: map['avatarUrl'],
