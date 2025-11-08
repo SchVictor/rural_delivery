@@ -15,7 +15,7 @@ Future<void> main() async {
 
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { //
   const MyApp({super.key});
     @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: LoginScreen(),
+      home: LoginScreen(), //redireciona para a tela de login
     );
   }
 }
