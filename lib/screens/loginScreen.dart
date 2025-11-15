@@ -60,15 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
 
 
-  // Por enquanto, vamos só simular que está "carregando"
-    
-    print('Formulário Válido! Enviando dados...');
-    print('Nome: ${_nameCtrl.text}');
-    print('Email: ${_emailCtrl.text}');
-
    
     if (isSignUp) {
-      await _auth.registerEmail(_emailCtrl.text.trim(), _passwordCtrl.text.trim());
+      await _auth.registerEmail(_emailCtrl.text.trim(), _passwordCtrl.text.trim(), _nameCtrl.text.trim());
     } else {
       await _auth.loginEmail(_emailCtrl.text.trim(), _passwordCtrl.text.trim());
     }

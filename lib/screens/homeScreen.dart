@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rural_delivery/controller/authController.dart';
+import 'package:rural_delivery/screens/cadastroEnderecoScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -62,6 +63,19 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ],
       ),
+      // ======================================================
+      // == 2. ADICIONE O FLOATING ACTION BUTTON AQUI ==
+      // ======================================================
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // 3. NAVEGAÇÃO GETX: 'Get.to' abre uma nova tela
+          Get.to(() => const CadastroEnderecoScreen()); //const? 
+        },
+        backgroundColor: earthyBrown, // Use sua cor do tema
+        tooltip: 'Cadastrar Novo Endereço',
+        child: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
+      ),
+      // ======================================================
       body: Column(
         children: [
           // --- SEÇÃO DE SAUDAÇÃO E AÇÕES PRINCIPAIS ---
@@ -85,16 +99,25 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  // Você precisará carregar o nome do usuário no seu AuthController
-                  'Olá, Usuário!',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: textDark,
-                    fontFamily: 'Montserrat',
-                  ),
-                ),
+            
+                // Trocamos o Text() por um Obx() para "ouvir" o controller
+                Obx(() {
+                  // Pega o nome do usuário a partir do AuthController.
+                  // Usamos '??' (fallback) para o caso de o usuário
+                  // ou o nome ainda não estarem carregados.
+                  final String nome = _auth.current.value?.name ?? 'Usuário';
+
+                  return Text(
+                    'Olá, $nome!', // <-- O nome agora é reativo
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: textDark,
+                      fontFamily: 'Montserrat',
+                    ),
+                  );
+                }),
+              
                 const SizedBox(height: 8),
                 const Text(
                   'O que você precisa hoje?',
@@ -111,8 +134,8 @@ class _HomeScreenState extends State<HomeScreen>
                     Expanded(
                       child: _buildActionButton(
                         icon: Icons.local_shipping_outlined,
-                        title: 'Enviar Pacote',
-                        subtitle: 'Solicite uma entrega',
+                        title: 'Solicitar Entrega',
+                        subtitle: 'Receba na sua casa',
                         color: primaryGreen,
                         onTap: () {
                           // TODO: Navegar para a tela de solicitar entrega

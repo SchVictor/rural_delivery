@@ -10,8 +10,7 @@ import 'package:rural_delivery/services/sessionService.dart';
 
 class AuthController extends GetxController {
   final AuthService _auth = AuthService();
-  final UserRepository _repo =
-      UserRepository(); //instancias dos serviços e repositórios
+  final UserRepository _repo = UserRepository(); //instancias dos serviços e repositórios
   final SessionService _session = SessionService();
 
   //Estado UI
@@ -21,7 +20,8 @@ class AuthController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  UserModel? current;
+final Rxn<UserModel> current = Rxn<UserModel>();
+
 
   @override
   void onInit() {
@@ -41,24 +41,24 @@ class AuthController extends GetxController {
     });
   }
 
-  Future<void> registerEmail(String email, String password) async {
+  Future<void> registerEmail(String email, String password, String name) async {
     await _run(() async {
       final u = await _auth.registerWithEmail(email, password);
-      await _afterFirebaseLogin(u, loginProviderIsGoogle: false, newUserDefaultRole: UserRole.user);
+      await _afterFirebaseLogin(u, loginProviderIsGoogle: false, newUserDefaultRole: UserRole.user, name: name);
     });
   }
-  /* Future<void> loginGoogle() async {
+  Future<void> loginGoogle() async {
     await _run(() async {
       final u = await _auth.signInWithGoogle();
       await _afterFirebaseLogin(u, loginProviderIsGoogle: true);
     });
-  }*/
+  }
 
   Future<void> logout() async {
     await _run(() async {
       await _auth.signOut();
       await _session.clear();
-      current = null;
+      current.value = null;
       Get.offAll(() => const LoginScreen());
     }, showErrors: false);
   }
@@ -67,22 +67,23 @@ class AuthController extends GetxController {
   Future<bool> tryRestoreSession() async {
     final s = await _session.load();
     if (s == null) return false;
-    current = s;
+    current.value = s;
     return true;
   }
 
   // ---------- PERMISSÕES ----------
   bool get canAccessAdminArea =>
-      current?.role == UserRole.admin || current?.role == UserRole.admin;
-  bool get isStudent => current?.role == UserRole.user;
+      current.value?.role == UserRole.admin || current.value?.role == UserRole.admin;
+  bool get isStudent => current.value?.role == UserRole.user;
 
-  get loginGoogle => null;
+  //get loginGoogle => null;
 
   // ---------- PRIVATE ----------
   Future<void> _afterFirebaseLogin(
     User? fbUser, {
     required bool loginProviderIsGoogle,
     UserRole newUserDefaultRole = UserRole.user,
+    String? name,
   }) async {
     if (fbUser == null) {
       throw Exception('Falha ao autenticar. Tente novamente.');
@@ -110,7 +111,7 @@ class AuthController extends GetxController {
 
     // 4) Salva na sessão
     await _session.save(local);
-    current = local;
+    current.value = local;
 
     // 5) Redireciona pela permissão (se quiser telas distintas por perfil, ajuste aqui)
     Get.offAll(() => const HomeScreen());
