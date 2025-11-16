@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rural_delivery/controller/authController.dart';
 import 'package:rural_delivery/screens/cadastroEnderecoScreen.dart';
+import 'package:rural_delivery/screens/solicitaFreteScreen.dart';
+// 1. --- IMPORTE OS CONTROLADORES E MODELOS NOVOS ---
+import 'package:rural_delivery/controller/pacoteController.dart';
+import 'package:rural_delivery/models/pacoteModel.dart';
+// ... (outros imports)
+import 'package:rural_delivery/screens/pacote_detalhes_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,17 +16,16 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-// Usamos o 'SingleTickerProviderStateMixin' para a animação do TabController
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final AuthController _auth =
-      Get.find<AuthController>(); // Encontra a instância já criada
+  final AuthController _auth = Get.find<AuthController>();
+  // 2. --- ENCONTRE O PACOTE CONTROLLER ---
+  final PacoteController _pacoteCtrl = Get.find<PacoteController>();
 
   @override
   void initState() {
     super.initState();
-    // Inicializa o TabController com 2 abas
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -32,133 +37,64 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Reutilizando a paleta de cores da LoginScreen para consistência
+    // ... (Suas constantes de cores)
     const primaryGreen = Color(0xFF6B8E23);
     const earthyBrown = Color(0xFF8B4513);
-    const lightBackgroundGreen = Color(0xFFE0E6C8);
-    const textDark = Color(0xFF36454F);
-    const offWhite = Color(0xFFFDFDFD);
+    // ...
 
     return Scaffold(
-      backgroundColor: lightBackgroundGreen,
-      appBar: AppBar(
-        title: const Text(
-          'Logística Inclusiva',
-          style: TextStyle(
-            color: offWhite,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Montserrat',
-          ),
-        ),
-        backgroundColor: primaryGreen,
-        elevation: 4,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: offWhite),
-            tooltip: 'Sair',
-            onPressed: () {
-              // Adicione uma caixa de diálogo de confirmação se desejar
-              _auth.logout();
-            },
-          ),
-        ],
-      ),
-      // ======================================================
-      // == 2. ADICIONE O FLOATING ACTION BUTTON AQUI ==
-      // ======================================================
+      // ... (Seu Scaffold, AppBar, e Botão de Endereço)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // 3. NAVEGAÇÃO GETX: 'Get.to' abre uma nova tela
-          Get.to(() => const CadastroEnderecoScreen()); //const? 
+          Get.to(() => const CadastroEnderecoScreen ());
         },
-        backgroundColor: earthyBrown, // Use sua cor do tema
+        backgroundColor: earthyBrown,
         tooltip: 'Cadastrar Novo Endereço',
         child: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
       ),
-      // ======================================================
+      
       body: Column(
         children: [
-          // --- SEÇÃO DE SAUDAÇÃO E AÇÕES PRINCIPAIS ---
+          // --- SEÇÃO DE SAUDAÇÃO ---
           Container(
-            padding: const EdgeInsets.all(20),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: offWhite,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-            ),
+            // ... (Seu container de saudação)
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-            
-                // Trocamos o Text() por um Obx() para "ouvir" o controller
                 Obx(() {
-                  // Pega o nome do usuário a partir do AuthController.
-                  // Usamos '??' (fallback) para o caso de o usuário
-                  // ou o nome ainda não estarem carregados.
                   final String nome = _auth.current.value?.name ?? 'Usuário';
-
                   return Text(
-                    'Olá, $nome!', // <-- O nome agora é reativo
+                    'Olá, $nome!',
                     style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: textDark,
-                      fontFamily: 'Montserrat',
+                      // ... (seu textstyle)
                     ),
                   );
                 }),
-              
-                const SizedBox(height: 8),
-                const Text(
-                  'O que você precisa hoje?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // --- BOTÕES DE AÇÃO ---
-                Row(
+                // ... (O resto da sua saudação e botões de ação)
+                 Row(
                   children: [
                     Expanded(
                       child: _buildActionButton(
                         icon: Icons.local_shipping_outlined,
-                        title: 'Solicitar Entrega',
-                        subtitle: 'Receba na sua casa',
+                        title: 'Enviar Pacote',
+                        subtitle: 'Solicite uma entrega',
                         color: primaryGreen,
                         onTap: () {
-                          // TODO: Navegar para a tela de solicitar entrega
-                          Get.snackbar(
-                            'Ação',
-                            'Navegando para a tela de envio de pacote...',
-                          );
+                          // Navega para a tela de solicitar frete
+                          Get.to(() => const SolicitaFreteScreen());
                         },
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildActionButton(
-                        icon: Icons.directions_car_filled_outlined,
-                        title: 'Oferecer Carona',
-                        subtitle: 'Transporte um pacote',
+                        icon: Icons.search_rounded, // Ícone "Realizar Frete"
+                        title: 'Realizar Frete',
+                        subtitle: 'Ver pacotes pendentes',
                         color: earthyBrown,
                         onTap: () {
-                          // TODO: Navegar para a tela de oferecer carona
-                          Get.snackbar(
-                            'Ação',
-                            'Navegando para a tela de oferecer carona...',
-                          );
+                          // Anima para a primeira aba
+                          _tabController.animateTo(0);
                         },
                       ),
                     ),
@@ -168,21 +104,17 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
 
-          // --- ABAS PARA VER ATIVIDADES ---
+          // --- ABAS ---
           TabBar(
-            controller: _tabController,
-            indicatorColor: earthyBrown,
-            labelColor: textDark,
-            unselectedLabelColor: Colors.grey.shade600,
-            indicatorWeight: 3,
-            tabs: const [
+            controller: _tabController, // <-- ADICIONE ESTA LINHA
+             tabs: const [
               Tab(
                 icon: Icon(Icons.inventory_2_outlined),
                 text: 'Entregas Pendentes',
               ),
               Tab(
-                icon: Icon(Icons.people_alt_outlined),
-                text: 'Viajantes Disponíveis',
+                icon: Icon(Icons.check_circle_outline),
+                text: 'Fretes Aceitos/Concluidos',
               ),
             ],
           ),
@@ -192,9 +124,10 @@ class _HomeScreenState extends State<HomeScreen>
             child: TabBarView(
               controller: _tabController,
               children: [
-                // Aba 1: Lista de Entregas
-                _buildDeliveriesList(),
-                // Aba 2: Lista de Viajantes
+              
+                _buildDeliveriesList(), 
+
+                // Aba 2: Lista de Viajantes (ainda com dados falsos)
                 _buildTravelersList(),
               ],
             ),
@@ -204,7 +137,138 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  // Widget auxiliar para criar os botões de ação
+
+
+
+  // Widget para construir a lista de entregas REAIS
+  Widget _buildDeliveriesList() {
+    // Envolvemos tudo em um Obx para "ouvir" o _pacoteCtrl
+    return Obx(() {
+      // Caso 1: Carregando
+      if (_pacoteCtrl.isLoading.value) {
+        return const Center(child: CircularProgressIndicator(color: Color(0xFF6B8E23)));
+      }
+
+      // Caso 2: Sem pacotes
+      if (_pacoteCtrl.pacotes.isEmpty) {
+        return const Center(
+          child: Text(
+            'Nenhuma solicitação de frete pendente.',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+
+      // Caso 3: Lista de pacotes
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        // Usa o tamanho da lista real do controller
+        itemCount: _pacoteCtrl.pacotes.length, 
+        itemBuilder: (context, index) {
+          // Pega o pacote real
+          final pacote = _pacoteCtrl.pacotes[index]; 
+          
+          // Formata os dados para exibição
+          String retirada = pacote.enderecoRetirada['rua'] ?? 'Endereço de retirada';
+          String entrega = pacote.enderecoEntrega['rua'] ?? 'Endereço de entrega';
+
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFF6B8E23), // primaryGreen
+                child: Icon(Icons.archive_outlined, color: Colors.white),
+              ),
+              // Mostra os dados reais do pacote
+              title: Text(
+                pacote.itemDesc,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text('De: $retirada\nPara: $entrega'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              
+              // ======================================================
+              // ==               MODIFICAÇÃO FEITA AQUI             ==
+              // ======================================================
+              onTap: () {
+                // Pega o pacote específico que foi clicado
+                final pacote = _pacoteCtrl.pacotes[index];
+                // Navega para a tela de detalhes, passando o pacote
+                Get.to(() => PacoteDetalhesScreen(pacote: pacote));
+              },
+              // ======================================================
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  // Widget para construir a lista de viajantes (mantém dados falsos por enquanto)
+  // Mude o _buildTravelersList (Aba 2)
+  Widget _buildTravelersList() {
+    // "Ouve" o PacoteController
+    return Obx(() {
+      // Caso 1: Carregando
+      if (_pacoteCtrl.isLoadingAceitos.value) {
+        return const Center(child: CircularProgressIndicator(color: Color(0xFF8B4513)));
+      }
+
+      // Caso 2: Sem pacotes
+      if (_pacoteCtrl.pacotesAceitos.isEmpty) {
+        return const Center(
+          child: Text(
+            'Você ainda não aceitou nenhum frete.',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+
+      // Caso 3: Lista de pacotes aceitos
+      return ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _pacoteCtrl.pacotesAceitos.length,
+        itemBuilder: (context, index) {
+          final pacote = _pacoteCtrl.pacotesAceitos[index];
+          // Formata os dados
+          String retirada = pacote.enderecoRetirada['rua'] ?? 'Retirada';
+          String entrega = pacote.enderecoEntrega['rua'] ?? 'Entrega';
+
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 12),
+            child: ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Color(0xFF8B4513), // earthyBrown
+                child: Icon(Icons.check, color: Colors.white), // Ícone de check
+              ),
+              title: Text(
+                pacote.itemDesc,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text('De: $retirada\nPara: $entrega'),
+              trailing: Text(
+                pacote.status.toUpperCase(), // Mostra "ACEITO"
+                style: TextStyle(color: Colors.green[700], fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                // Você pode reutilizar a mesma tela de detalhes
+                Get.to(() => PacoteDetalhesScreen(pacote: pacote));
+              },
+            ),
+          );
+        },
+      );
+    });
+  }
+
+  // Widget auxiliar para criar os botões de ação (sem mudanças)
   Widget _buildActionButton({
     required IconData icon,
     required String title,
@@ -212,6 +276,7 @@ class _HomeScreenState extends State<HomeScreen>
     required Color color,
     required VoidCallback onTap,
   }) {
+    // ... (seu código do _buildActionButton)
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -244,102 +309,6 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-    );
-  }
-
-  // DADOS DE EXEMPLO - Substitua por dados do Firestore
-  final List<Map<String, String>> pendingDeliveries = [
-    {
-      'from': 'Zona Rural de Pirenópolis, GO',
-      'to': 'Centro, Anápolis, GO',
-      'package': 'Caixa de Ferramentas',
-    },
-    {
-      'from': 'Distrito de Souzânia, GO',
-      'to': 'Rodoviária, Goiânia, GO',
-      'package': 'Peças de Trator',
-    },
-    {
-      'from': 'Fazenda Santa Brígida, GO',
-      'to': 'Correios, Alexânia, GO',
-      'package': 'Documentos Importantes',
-    },
-  ];
-
-  final List<Map<String, String>> availableTravelers = [
-    {
-      'name': 'João da Silva',
-      'route': 'Pirenópolis > Anápolis',
-      'date': '10/11/2025',
-    },
-    {
-      'name': 'Maria Oliveira',
-      'route': 'Corumbá de Goiás > Goiânia',
-      'date': '12/11/2025',
-    },
-  ];
-
-  // Widget para construir a lista de entregas
-  Widget _buildDeliveriesList() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: pendingDeliveries.length,
-      itemBuilder: (context, index) {
-        final delivery = pendingDeliveries[index];
-        return Card(
-          elevation: 2,
-          margin: const EdgeInsets.only(bottom: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Color(0xFF6B8E23), // primaryGreen
-              child: Icon(Icons.archive_outlined, color: Colors.white),
-            ),
-            title: Text(
-              delivery['package']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text('De: ${delivery['from']}\nPara: ${delivery['to']}'),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-        );
-      },
-    );
-  }
-
-  // Widget para construir a lista de viajantes
-  Widget _buildTravelersList() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: availableTravelers.length,
-      itemBuilder: (context, index) {
-        final traveler = availableTravelers[index];
-        return Card(
-          elevation: 2,
-          margin: const EdgeInsets.only(bottom: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Color(0xFF8B4513), // earthyBrown
-              child: Icon(Icons.person_outline, color: Colors.white),
-            ),
-            title: Text(
-              traveler['name']!,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              'Rota: ${traveler['route']}\nData: ${traveler['date']}',
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-        );
-      },
     );
   }
 }

@@ -13,7 +13,7 @@ class EnderecoModel {
   String estado;
   String cep;
   String? complemento;
-  String whatsApp;
+  String? whatsApp;
 
   String status;
 
@@ -27,7 +27,7 @@ class EnderecoModel {
     required this.cidade,
     required this.estado,
     required this.cep,
-    required this.whatsApp,
+    this.whatsApp,
 
     this.complemento,
     
@@ -77,21 +77,23 @@ class EnderecoModel {
     };
   }
 
-  factory EnderecoModel.fromFirestoreSnapshot(DocumentSnapshot snap) {
-    Map<String, dynamic> data = snap.data() as Map<String, dynamic>;
+factory EnderecoModel.fromFirestoreSnapshot(DocumentSnapshot snap) {
+    // Adiciona '?? {}' para segurança extra
+    Map<String, dynamic> data = snap.data() as Map<String, dynamic>? ?? {}; 
+    
     return EnderecoModel(
       firestoreId: snap.id,
-      userId: data['userId'], // <-- Adicione aqui
-      rua: data['rua'],
-      numero: data['numero'],
-      bairro: data['bairro'],
-      cidade: data['cidade'],
-      estado: data['estado'],
-      cep: data['cep'],
-      complemento: data['complemento'],
-      whatsApp: data['whatsApp'],
+      // Fornece um valor padrão ('') caso o campo não exista no Firestore
+      userId: data['userId'] ?? '', 
+      rua: data['rua'] ?? '',
+      numero: data['numero'] ?? '',
+      bairro: data['bairro'] ?? '',
+      cidade: data['cidade'] ?? '',
+      estado: data['estado'] ?? '',
+      cep: data['cep'] ?? '',
 
-      status: 'synced',
+
+      status: 'synced', // Correto, pois veio do Firestore
     );
   }
 }

@@ -73,16 +73,9 @@ class _CadastroEnderecoScreen extends State<CadastroEnderecoScreen> {
         cidade: _cidadeCtrl.text,
         estado: _estadoCtrl.text,
         cep: _cepCtrl.text,
-        
-        complemento: _complementoCtrl.text, 
-        whatsApp: _whatsAppCtrl.text , 
 
         userId: userId,
       );
-
-      // 4. Sucesso!
-      Get.snackbar('Sucesso!', 'Endereço salvo localmente e pronto para sincronizar.');
-      Get.back(); // Volta para a HomeScreen
 
     } catch (e) {
       Get.snackbar('Erro ao Salvar', 'Não foi possível salvar o endereço: $e');
