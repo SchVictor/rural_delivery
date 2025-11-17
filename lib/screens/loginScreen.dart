@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
-                            'assets/countrylane.jpg', // <<< SUBSTITUA AQUI
+                            'assets/countrylane.jpg',
                             height: 120, // Ajuste a altura como preferir
                           ),
                           const SizedBox(

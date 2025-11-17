@@ -5,10 +5,7 @@ import 'package:rural_delivery/controller/authController.dart';
 import 'package:rural_delivery/controller/enderecoController.dart';
 
 class CadastroEnderecoScreen extends StatefulWidget {
-  // Se você quiser editar um endereço, você passaria ele aqui
-  // final EnderecoModel? endereco; 
-  // const EnderecoFormScreen({super.key, this.endereco});
-  
+
   // Por enquanto, só cadastro:
   const CadastroEnderecoScreen({super.key});
 
@@ -30,7 +27,7 @@ class _CadastroEnderecoScreen extends State<CadastroEnderecoScreen> {
   final _complementoCtrl = TextEditingController();
   final _whatsAppCtrl = TextEditingController();
 
-  // Controladores globais (que já "vivem" na memória)
+  // Controladores globais
   final AuthController _auth = Get.find<AuthController>();
   final EnderecoController _enderecoCtrl = Get.find<EnderecoController>();
 

@@ -18,14 +18,6 @@ class EnderecoController extends GetxController {
   void onInit() {
     super.onInit();
     
-    // ======================================================
-    // ==              ÁREA MODIFICADA                  ==
-    // ======================================================
-    
-    // NÃO carregue os dados aqui direto.
-    // loadEnderecosDoFirestore(); // <-- REMOVA ISSO
-
-    // EM VEZ DISSO, "OUÇA" o AuthController:
     ever(authController.current, (UserModel? user) {
       if (user != null) {
         // Se o usuário mudou (para logado)
@@ -42,9 +34,7 @@ class EnderecoController extends GetxController {
 
   // A função agora recebe o userId, não precisa mais procurar
   Future<void> loadEnderecosDoFirestore(String userId) async {
-    // A verificação 'if (userId == null)' pode ser removida
-    // pois a lógica do 'ever' já garante que o user não é nulo.
-    
+
     isLoading(true);
     // Limpa a lista antiga antes de carregar a nova
     enderecos.clear(); 
@@ -99,16 +89,3 @@ class EnderecoController extends GetxController {
   }
 }
  
- 
- 
- /*       rua: _ruaCtrl.text,
-        numero: _numeroCtrl.text,
-        bairro: _bairroCtrl.text,
-        cidade: _cidadeCtrl.text,
-        estado: _estadoCtrl.text,
-        cep: _cepCtrl.text,
-        
-        complemento: _complementoCtrl.text, 
-        whatsApp: _whatsAppCtrl.text , 
-
-        userId: userId,*/

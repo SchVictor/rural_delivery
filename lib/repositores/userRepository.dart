@@ -64,9 +64,13 @@ class UserRepository {
         await db.insert('users', user.toMap());
       } else {
         // update
+        // 1. Pega o mapa de dados
+        final dataToUpdate = user.toMap();
+        // 2. Remove o campo 'id' do mapa
+        dataToUpdate.remove('id');
         await db.update(
           'users',
-          user.toMap(),
+          dataToUpdate, // 3. Passa o mapa "limpo"          where: 'id = ?',
           where: 'id = ?',
           whereArgs: [existing.first['id']],
         );

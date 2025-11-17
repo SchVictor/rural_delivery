@@ -5,7 +5,6 @@ import 'package:rural_delivery/screens/cadastroEnderecoScreen.dart';
 import 'package:rural_delivery/screens/solicitaFreteScreen.dart';
 // 1. --- IMPORTE OS CONTROLADORES E MODELOS NOVOS ---
 import 'package:rural_delivery/controller/pacoteController.dart';
-import 'package:rural_delivery/models/pacoteModel.dart';
 // ... (outros imports)
 import 'package:rural_delivery/screens/pacote_detalhes_screen.dart';
 
@@ -20,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final AuthController _auth = Get.find<AuthController>();
-  // 2. --- ENCONTRE O PACOTE CONTROLLER ---
   final PacoteController _pacoteCtrl = Get.find<PacoteController>();
 
   @override
@@ -192,9 +190,6 @@ class _HomeScreenState extends State<HomeScreen>
               subtitle: Text('De: $retirada\nPara: $entrega'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               
-              // ======================================================
-              // ==               MODIFICAÇÃO FEITA AQUI             ==
-              // ======================================================
               onTap: () {
                 // Pega o pacote específico que foi clicado
                 final pacote = _pacoteCtrl.pacotes[index];

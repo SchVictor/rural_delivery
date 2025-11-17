@@ -15,8 +15,7 @@ Future<void> main() async {
   await Firebase.initializeApp( //inicializa o firebase com as configurações da classe DefaultFirebaseOptions
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // 2. INJETE SEU AUTHCONTROLLER AQUI (permanent: true)
-  // Isso o coloca na memória global ANTES do app rodar.
+//injets de controllers e repositórios globais
   Get.put(AuthController(), permanent: true);
   Get.put(EnderecoRepository(), permanent: true);
   Get.put(PacoteRepository(), permanent: true);
